@@ -1,28 +1,68 @@
 #include <iostream>
 #include <GL/gl.h>
 #include <GLFW/glfw3.h>
-#include <cmath>
+#include <GL/glut.h>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
+#include <chrono>
 
-// Función que dibuja la gráfica de una función con un color dado
-void drawFunction(float (*func)(float), float r, float g, float b) {
+int windowWidth = 1024;
+int windowHeight = 720;
 
+double customCos(double x) {
+    constexpr int terms = 100000; 
+    double result = 1.0;
+    double term = 1.0;
+
+    for (int n = 1; n < terms; n++) {
+        term *= (-x * x) / ((2 * n) * (2 * n - 1));
+        result += term;
+    }
+
+    return result;
+}
+
+double customSen(double x) {
+    const int n = 100000;
+    double seno = 0.0;
+    double term = x;
+    int sign = 1;
+    
+    for (int i = 1; i <= n; i += 2) {
+        seno += sign * term;
+        sign *= -1;
+        term *= (x * x) / ((i + 1) * (i + 2));
+    }
+    
+    return seno;
+}
+
+std::vector<double> generateXValues(double start, double end, double step) {
+    std::vector<double> xValues;
+    for (double x = start; x <= end; x += step) {
+        xValues.push_back(x);
+    }
+    return xValues;
+}
+
+void drawFunction(const std::vector<double>& xValues, const std::vector<double>& yValues, float r, float g, float b) {
     glLoadIdentity();
     glOrtho(-10, 10, -2, 2, -1, 1);
 
-    // Dibuja los ejes X e Y
-    glColor3f(255, 255, 255);  // Color blanco para los ejes
+    glColor3f(255, 255, 255); 
     glBegin(GL_LINES);
     glVertex2f(-10.0, 0.0);
     glVertex2f(10.0, 0.0);
-    glVertex2f(0.0, -4.0);
-    glVertex2f(0.0, 4.0);
+    glVertex2f(0.0, -2.0);
+    glVertex2f(0.0, 2.0);
     glEnd();
 
     glColor3f(r, g, b);
     glBegin(GL_LINE_STRIP);
-    for (float x = -10.0; x <= 10.0; x += 0.05) {
-        float y = func(x);
-        glVertex2f(x, y);
+
+    for (size_t i = 0; i < xValues.size(); ++i) {
+        glVertex2f(xValues[i], yValues[i]);
     }
     glEnd();
 }
@@ -33,7 +73,7 @@ int main() {
         return -1;
     }
 
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Gráfica de Funciones", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(windowWidth, windowHeight, "Gráfica de Funciones", NULL, NULL);
     if (!window) {
         std::cerr << "Error al crear la ventana GLFW" << std::endl;
         glfwTerminate();
@@ -42,31 +82,36 @@ int main() {
 
     glfwMakeContextCurrent(window);
 
+    int numberOfLines = 10; // Set the number of replicated lines
+    double step = 0.005; // Adjust the step size for closer lines
+
     while (!glfwWindowShouldClose(window)) {
+
         glClear(GL_COLOR_BUFFER_BIT);
-        glLoadIdentity();
-        glOrtho(-10, 10, -2, 2, -1, 1);
 
-        // Dibuja las funciones con diferentes colores
-        drawFunction([](float x) { return std::sin(x); }, 1.0, 0.0, 0.0);
-        drawFunction([](float x) { return std::sin(-x); }, 1.0, 0.0, 0.0); 
-        drawFunction([](float x) { return std::cos(x); }, 0.0, 1.0, 0.0); 
-        drawFunction([](float x) { return std::cos(x*3); }, 0.0, 1.0, 0.0); 
-        drawFunction([](float x) { return x * x; }, 0.0, 0.0, 1.0);
-        drawFunction([](float x) { return std::tan(x); }, 1.0, 1.0, 0.0); 
-        drawFunction([](float x) { return std::exp(x); }, 1.0, 0.0, 1.0);  
-        drawFunction([](float x) { return std::log(x + 1); }, 0.0, 1.0, 1.0); 
-        drawFunction([](float x) { return std::sqrt(x); }, 0.5, 0.5, 0.5);  
-        drawFunction([](float x) { return std::abs(std::sin(x)); }, 0.0, 1.0, 0.5);  
-        drawFunction([](float x) { return std::ceil(x); }, 0.5, 0.0, 0.5); 
-        drawFunction([](float x) { return std::floor(x); }, 1.0, 0.5, 0.0);  
-        drawFunction([](float x) { return std::exp(-x); }, 0.8, 0.2, 0.8);  
-        drawFunction([](float x) { return std::log(x + 1); }, 0.2, 0.7, 0.4);  
-        drawFunction([](float x) { return std::tanh(x); }, 0.4, 0.8, 0.2); 
-        drawFunction([](float x) { return std::abs(x); }, 0.7, 0.4, 0.1);
-        drawFunction([](float x) { return std::sinh(x); }, 0.5, 0.2, 0.7);  
-        drawFunction([](float x) { return std::cosh(x); }, 0.2, 0.6, 0.8);
+        // Generate x values with a smaller step
+        std::vector<double> xValues = generateXValues(-10.0, 10.0, step);
+        
+        auto start = std::chrono::high_resolution_clock::now(); 
+        // Calculate and draw the cosine functions at different Y positions
+        for (int i = 0; i < numberOfLines; ++i) {
+            std::vector<double> yCosValues;
 
+            double yOffset = 1.8 - i * 0.4; // Adjust the yOffset for closer lines
+
+            for (double x : xValues) {
+                yCosValues.push_back(customCos(x) + yOffset);
+            }
+
+            // Draw the cosine function
+            drawFunction(xValues, yCosValues, static_cast<float>(i) / numberOfLines, 0.0, 1.0 - static_cast<float>(i) / numberOfLines);
+        }
+
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double, std::milli> duration = end - start; 
+
+        std::cout << "\nTiempo para graficar " << numberOfLines << " funciones: " << duration.count() << " milisegundos\n";
+        
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
