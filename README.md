@@ -24,6 +24,19 @@ Go to the project directory
   cd PEF-2023
 ```
 
+Run this command to install required libs
+
+```bash
+  sudo apt-get install libglfw3 libglfw3-dev libglew-dev mesa-common-dev
+```
+
+After the command, run this lines too
+
+```bash
+  pkg-config --libs glfw3
+  pkg-config --libs glew
+```
+
 Compile the project (in my case I'm using WSL)
 * Choose the compile optimizarion level that you prefer (-O1, -O0, etc)
 
