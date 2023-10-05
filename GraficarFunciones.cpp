@@ -92,6 +92,9 @@ int main() {
         // Generate x values with a smaller step
         std::vector<double> xValues = generateXValues(-10.0, 10.0, step);
         
+        // TODO: Se puede encapsular esta medición de tiempo en una función 
+        // que reciba la función a la que se le va a medir el tiempo
+        // como parámetro?. De paso sacar el for a una función para poder perfilar.
         auto start = std::chrono::high_resolution_clock::now(); 
         // Calculate and draw the cosine functions at different Y positions
         for (int i = 0; i < numberOfLines; ++i) {
