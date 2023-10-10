@@ -7,6 +7,7 @@
 #include <ctime>
 #include <chrono>
 
+
 int windowWidth = 1024;
 int windowHeight = 720;
 
@@ -67,6 +68,30 @@ void drawFunction(const std::vector<double>& xValues, const std::vector<double>&
     glEnd();
 }
 
+void iterateAndDraw(int numberOfLines, const std::vector<double>& xValues) {
+    for (int i = 0; i < numberOfLines; ++i) {
+        std::vector<double> yCosValues;
+        double yOffset = 1.8 - i * 0.4;
+        for (double x : xValues) {
+            yCosValues.push_back(customCos(x) + yOffset);
+        }
+        drawFunction(xValues, yCosValues, static_cast<float>(i) / numberOfLines, 0.0, 1.0 - static_cast<float>(i) / numberOfLines);
+    }
+}
+
+void measure(void (*func)(int, const std::vector<double>&), int numberOfLines, const std::vector<double>& xValues) {
+    auto start = std::chrono::high_resolution_clock::now();
+    
+    func(numberOfLines, xValues);
+    
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> duration = end - start;
+
+    std::cout << "\nTiempo para graficar " << numberOfLines << " funciones: " << duration.count() << " milisegundos\n";
+    
+}
+
+
 int main() {
     if (!glfwInit()) {
         std::cerr << "Error al inicializar GLFW" << std::endl;
@@ -82,7 +107,7 @@ int main() {
 
     glfwMakeContextCurrent(window);
 
-    int numberOfLines = 10; // Set the number of replicated lines
+    int numberOfLines = 5; // Set the number of replicated lines
     double step = 0.005; // Adjust the step size for closer lines
 
     while (!glfwWindowShouldClose(window)) {
@@ -95,25 +120,11 @@ int main() {
         // TODO: Se puede encapsular esta medición de tiempo en una función 
         // que reciba la función a la que se le va a medir el tiempo
         // como parámetro?. De paso sacar el for a una función para poder perfilar.
-        auto start = std::chrono::high_resolution_clock::now(); 
-        // Calculate and draw the cosine functions at different Y positions
-        for (int i = 0; i < numberOfLines; ++i) {
-            std::vector<double> yCosValues;
 
-            double yOffset = 1.8 - i * 0.4; // Adjust the yOffset for closer lines
+         // Call the measure function with iterateAndDraw as a parameter
+        measure(iterateAndDraw, numberOfLines, xValues);
 
-            for (double x : xValues) {
-                yCosValues.push_back(customCos(x) + yOffset);
-            }
-
-            // Draw the cosine function
-            drawFunction(xValues, yCosValues, static_cast<float>(i) / numberOfLines, 0.0, 1.0 - static_cast<float>(i) / numberOfLines);
-        }
-
-        auto end = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double, std::milli> duration = end - start; 
-
-        std::cout << "\nTiempo para graficar " << numberOfLines << " funciones: " << duration.count() << " milisegundos\n";
+        
         
         glfwSwapBuffers(window);
         glfwPollEvents();
