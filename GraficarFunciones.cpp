@@ -8,14 +8,14 @@
 #include <chrono>
 #include <functional>
 
-//Probando el git
+using namespace std;
 
 int windowWidth = 1024;
 int windowHeight = 720;
 
 double customCos(double x)
 {
-    constexpr int terms = 100000;
+    constexpr int terms = 10000;
     double result = 1.0;
     double term = 1.0;
 
@@ -30,7 +30,7 @@ double customCos(double x)
 
 double customSen(double x)
 {
-    const int n = 100000;
+    const int n = 10000;
     double seno = 0.0;
     double term = x;
     int sign = 1;
@@ -45,9 +45,9 @@ double customSen(double x)
     return seno;
 }
 
-std::vector<double> generateXValues(double start, double end, double step)
+vector<double> generateXValues(double start, double end, double step)
 {
-    std::vector<double> xValues;
+    vector<double> xValues;
     for (double x = start; x <= end; x += step)
     {
         xValues.push_back(x);
@@ -55,7 +55,7 @@ std::vector<double> generateXValues(double start, double end, double step)
     return xValues;
 }
 
-void drawFunction(const std::vector<double> &xValues, const std::vector<double> &yValues, float r, float g, float b)
+void drawFunction(const vector<double> &xValues, const vector<double> &yValues, float r, float g, float b)
 {
     glLoadIdentity();
     glOrtho(-10, 10, -2, 2, -1, 1);
@@ -78,7 +78,7 @@ void drawFunction(const std::vector<double> &xValues, const std::vector<double> 
     glEnd();
 }
 
-void drawBoundedFunction(const std::function<double(double)> &func, double startX, double endX, float r, float g, float b)
+void drawBoundedFunction(const function<double(double)> &func, double startX, double endX, float r, float g, float b, double verticalOffset)
 {
     glLoadIdentity();
     glOrtho(-10, 10, -2, 2, -1, 1);
@@ -97,50 +97,52 @@ void drawBoundedFunction(const std::function<double(double)> &func, double start
     for (double x = startX; x <= endX; x += 0.005)
     {
         double y = func(x);
-        glVertex2f(x, y);
+        glVertex2f(x, y + verticalOffset * 0.2);
     }
     glEnd();
 }
 
-int main()
-{
-    if (!glfwInit())
-    {
-        std::cerr << "Error al inicializar GLFW" << std::endl;
+int main() {
+
+    if (!glfwInit()) {
+        cerr << "Error al inicializar GLFW" << endl;
         return -1;
     }
 
     GLFWwindow *window = glfwCreateWindow(windowWidth, windowHeight, "Gráfica de Funciones", NULL, NULL);
-    if (!window)
-    {
-        std::cerr << "Error al crear la ventana GLFW" << std::endl;
+    if (!window) {
+        cerr << "Error al crear la ventana GLFW" << endl;
         glfwTerminate();
         return -1;
     }
 
     glfwMakeContextCurrent(window);
 
-    int numberOfLines = 10; // Set the number of replicated lines
-    double step = 0.005;    // Adjust the step size for closer lines
+    int numberOfLines = 10;
+    double step = 0.005;    
 
     while (!glfwWindowShouldClose(window))
     {
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // Generate x values with a smaller step
-        std::vector<double> xValues = generateXValues(-10.0, 10.0, step);
+        vector<double> xValues = generateXValues(-10.0, 10.0, step);
+        
+        auto start = chrono::high_resolution_clock::now();
 
-        // TODO: Se puede encapsular esta medición de tiempo en una función
-        // que reciba la función a la que se le va a medir el tiempo
-        // como parámetro?. De paso sacar el for a una función para poder perfilar.
-        auto start = std::chrono::high_resolution_clock::now();
-        // Calculate and draw the cosine functions at different Y positions
         for (int i = 0; i < numberOfLines; ++i)
         {
-            std::vector<double> yCosValues;
+            vector<double> yCosValues;
 
             double yOffset = 1.8 - i * 0.4; // Adjust the yOffset for closer lines
+            double verticalOffSet = (i % 2 == 0) ? -(i / 2) * 0.5 : ((i + 1) / 2) * 0.5;
+
+            float r = static_cast<float>(i % 3);
+            float g = static_cast<float>((i + 1) % 3);
+            float b = static_cast<float>((i + 2) % 3);
+
+
+            drawBoundedFunction(customSen, -5, 5, r, g, b, verticalOffSet);
 
             for (double x : xValues)
             {
@@ -151,13 +153,10 @@ int main()
             drawFunction(xValues, yCosValues, static_cast<float>(i) / numberOfLines, 0.0, 1.0 - static_cast<float>(i) / numberOfLines);
         }
 
-        // Dibuja una función acotada, por ejemplo, el seno entre -2π y 2π
-        drawBoundedFunction(customSen, -2 * 3.14, 2 * 3.14, 1.0, 0.0, 0.0);
+        auto end = chrono::high_resolution_clock::now();
+        chrono::duration<double, milli> duration = end - start;
 
-        auto end = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double, std::milli> duration = end - start;
-
-        std::cout << "\nTiempo para graficar " << numberOfLines << " funciones: " << duration.count() << " milisegundos\n";
+        cout << "\nTiempo para graficar " << numberOfLines << " funciones: " << duration.count() << " milisegundos\n";
 
         glfwSwapBuffers(window);
         glfwPollEvents();
