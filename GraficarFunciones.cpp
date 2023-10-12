@@ -160,8 +160,6 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
 
         vector<double> xValues = generateXValues(-10.0, 10.0, step);
-        
-        auto start = chrono::high_resolution_clock::now();
 
         // TODO: Se puede encapsular esta medición de tiempo en una función
         // que reciba la función a la que se le va a medir el tiempo
