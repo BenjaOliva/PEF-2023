@@ -78,29 +78,6 @@ void drawFunction(const vector<double> &xValues, const vector<double> &yValues, 
     glEnd();
 }
 
-void iterateAndDraw(int numberOfLines, const std::vector<double>& xValues) {
-    for (int i = 0; i < numberOfLines; ++i) {
-        std::vector<double> yCosValues;
-        double yOffset = 1.8 - i * 0.4;
-        for (double x : xValues) {
-            yCosValues.push_back(customCos(x) + yOffset);
-        }
-        drawFunction(xValues, yCosValues, static_cast<float>(i) / numberOfLines, 0.0, 1.0 - static_cast<float>(i) / numberOfLines);
-    }
-}
-
-void measure(void (*func)(int, const std::vector<double>&), int numberOfLines, const std::vector<double>& xValues) {
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    func(numberOfLines, xValues);
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double, std::milli> duration = end - start;
-
-    std::cout << "\nTiempo para graficar " << numberOfLines << " funciones: " << duration.count() << " milisegundos\n";
-    
-}
-
 void drawBoundedFunction(const std::function<double(double)> &func, double startX, double endX, float r, float g, float b, double verticalOffset)
 {
     glLoadIdentity();
@@ -123,6 +100,39 @@ void drawBoundedFunction(const std::function<double(double)> &func, double start
         glVertex2f(x, y + verticalOffset * 0.2);
     }
     glEnd();
+}
+
+
+void iterateAndDraw(int numberOfLines, const std::vector<double>& xValues) {
+    for (int i = 0; i < numberOfLines; ++i) {
+        std::vector<double> yCosValues;
+        double yOffset = 1.8 - i * 0.4;
+
+        double verticalOffSet = (i % 2 == 0) ? -(i / 2) * 0.5 : ((i + 1) / 2) * 0.5;
+
+        float r = static_cast<float>(i % 3);
+        float g = static_cast<float>((i + 1) % 3);
+        float b = static_cast<float>((i + 2) % 3);
+
+        drawBoundedFunction(customSen, -5, 5, r, g, b, verticalOffSet);
+
+        for (double x : xValues) {
+            yCosValues.push_back(customCos(x) + yOffset);
+        }
+        drawFunction(xValues, yCosValues, static_cast<float>(i) / numberOfLines, 0.0, 1.0 - static_cast<float>(i) / numberOfLines);
+    }
+}
+
+void measure(void (*func)(int, const std::vector<double>&), int numberOfLines, const std::vector<double>& xValues) {
+    auto start = std::chrono::high_resolution_clock::now();
+    
+    func(numberOfLines, xValues);
+    
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> duration = end - start;
+
+    std::cout << "\nTiempo para graficar " << numberOfLines << " funciones: " << duration.count() << " milisegundos\n";
+    
 }
 
 int main() {
@@ -159,39 +169,7 @@ int main() {
 
          // Call the measure function with iterateAndDraw as a parameter
         measure(iterateAndDraw, numberOfLines, xValues);
-
         
-        
-        auto start = std::chrono::high_resolution_clock::now();
-        // Calculate and draw the cosine functions at different Y positions
-        for (int i = 0; i < numberOfLines; ++i)
-        {
-            vector<double> yCosValues;
-
-            double yOffset = 1.8 - i * 0.4; // Adjust the yOffset for closer lines
-            double verticalOffSet = (i % 2 == 0) ? -(i / 2) * 0.5 : ((i + 1) / 2) * 0.5;
-
-            float r = static_cast<float>(i % 3);
-            float g = static_cast<float>((i + 1) % 3);
-            float b = static_cast<float>((i + 2) % 3);
-
-
-            drawBoundedFunction(customSen, -5, 5, r, g, b, verticalOffSet);
-
-            for (double x : xValues)
-            {
-                yCosValues.push_back(customCos(x) + yOffset);
-            }
-
-            // Draw the cosine function
-            drawFunction(xValues, yCosValues, static_cast<float>(i) / numberOfLines, 0.0, 1.0 - static_cast<float>(i) / numberOfLines);
-        }
-
-        auto end = chrono::high_resolution_clock::now();
-        chrono::duration<double, milli> duration = end - start;
-
-        cout << "\nTiempo para graficar " << numberOfLines << " funciones: " << duration.count() << " milisegundos\n";
-
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
