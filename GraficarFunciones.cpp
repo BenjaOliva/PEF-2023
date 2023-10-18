@@ -1,7 +1,16 @@
+#define GL_SILENCE_DEPRECATION
+
 #include <iostream>
+
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#include <GLUT/glut.h>
+#else
 #include <GL/gl.h>
-#include <GLFW/glfw3.h>
 #include <GL/glut.h>
+#endif
+
+#include <GLFW/glfw3.h>
 #include <vector>
 #include <cstdlib>
 #include <ctime>
