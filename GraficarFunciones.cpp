@@ -129,6 +129,8 @@ void iterateAndDraw(int numberOfLines, const std::vector<double>& xValues) {
             yCosValues.push_back(customCos(x) + yOffset);
         }
         drawFunction(xValues, yCosValues, static_cast<float>(i) / numberOfLines, 0.0, 1.0 - static_cast<float>(i) / numberOfLines);
+        yCosValues.clear();
+        yCosValues.shrink_to_fit();
     }
 }
 
@@ -160,8 +162,8 @@ int main() {
 
     glfwMakeContextCurrent(window);
 
-    int numberOfLines = 10;
-    double step = 0.005;    
+    int numberOfLines = 3;
+    double step = 0.5;    
 
     while (!glfwWindowShouldClose(window))
     {
@@ -176,7 +178,8 @@ int main() {
 
          // Call the measure function with iterateAndDraw as a parameter
         measure(iterateAndDraw, numberOfLines, xValues);
-        
+        xValues.clear();
+        xValues.shrink_to_fit();
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

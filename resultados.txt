@@ -1,0 +1,15 @@
+==11572== LEAK SUMMARY:
+==11572==    definitely lost: 66,560 bytes in 8 blocks
+==11572==    indirectly lost: 952 bytes in 16 blocks
+==11572==      possibly lost: 139,798 bytes in 168 blocks
+==11572==    still reachable: 3,971,454 bytes in 5,755 blocks
+==11572==                       of which reachable via heuristic:
+==11572==                         newarray           : 12,104 bytes in 30 blocks
+==11572==                         multipleinheritance: 5,724 bytes in 3 blocks
+==11572==         suppressed: 0 bytes in 0 blocks
+==11572== Reachable blocks (those to which a pointer was found) are not shown.
+==11572== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==11572== 
+==11572== Use --track-origins=yes to see where uninitialised values come from
+==11572== For lists of detected and suppressed errors, rerun with: -s
+==11572== ERROR SUMMARY: 325954 errors from 1154 contexts (suppressed: 8 from 4)
