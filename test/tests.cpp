@@ -69,6 +69,24 @@ TEST(CustomSenMathTest, TestNegativo) {
     EXPECT_DOUBLE_EQ(customSen(-1.0), sin(-1.0));
 }
 
+// Test de paralelismo para customCosParallel y customSenParallel
+
+// TEST(CustomCosParallelTest, TestPositivo) {
+//     EXPECT_DOUBLE_EQ(customCosParallel(0.0), 1.0);
+// }
+
+// TEST(CustomCosParallelTest, TestNegativo) {
+//     EXPECT_DOUBLE_EQ(customCosParallel(-1.0), 0.54030230586813977);
+// }
+
+// TEST(CustomSenParallelTest, TestPositivo) {
+//     EXPECT_DOUBLE_EQ(customSenParallel(0.0), 0.0);
+// }
+
+// TEST(CustomSenParallelTest, TestNegativo) {
+//     EXPECT_DOUBLE_EQ(customSenParallel(-1.0), -0.8414709848078965);
+// }
+
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
