@@ -35,19 +35,33 @@ After the command, run this lines too
 
 Compile the project
 
+- Access the `src` folder
+
+```bash
+  cd src
+```
+
+- Compile the project using the following commands:
+
 - Choose the compile optimizarion level that you prefer (-O1, -O0, etc)
 
 For WSL:
 
 ```bash
-  g++ -O1 -o GraficarFunciones GraficarFunciones.cpp $(pkg-config --cflags --libs glfw3
+  g++ -O1 -o Execute main.cpp GraficarFunciones.cpp FuncionesMath.cpp $(pkg-config --cflags --libs glfw3
 glew)
 ```
 
 For macOS:
 
 ```bash
-  g++ -std=c++11 -o GraficarFunciones GraficarFunciones.cpp -framework OpenGL -framework GLUT $(pkg-config --cflags --libs glfw3 glew)
+  g++ -std=c++14 -o Execute main.cpp GraficarFunciones.cpp FuncionesMath.cpp -framework OpenGL -framework GLUT $(pkg-config --cflags --libs glfw3 glew)
+```
+
+For Linux:
+
+```bash
+g++ -o Execute main.cpp GraficarFunciones.cpp FuncionesMath.cpp -lGL -lGLEW -lglfw
 ```
 
 Also for macOS you might have to add a .vscode folder with a c_cpp_properties.json, for example:
@@ -59,7 +73,8 @@ Also for macOS you might have to add a .vscode folder with a c_cpp_properties.js
       "name": "Mac",
       "includePath": [
         "${workspaceFolder}/**",
-        "/opt/homebrew/Cellar/glfw/3.3.8/include"
+        "/opt/homebrew/Cellar/glfw/3.3.8/include",
+        "/opt/homebrew/Cellar/googletest/1.14.0/include"
       ],
       "defines": [],
       "macFrameworkPath": [
@@ -78,5 +93,49 @@ Also for macOS you might have to add a .vscode folder with a c_cpp_properties.js
 🌟Run the project
 
 ```bash
-  ./GraficarFunciones
+  ./Execute
 ```
+
+## Test the project
+
+- Install the Google Test library
+
+For MacOS:
+
+```bash
+  brew install googletest
+```
+
+For Linux:
+
+```bash
+  sudo apt-get install libgtest-dev
+```
+
+- From the root folder, run the following command:
+
+```bash
+  cd test
+```
+
+- Compile the test using the following commands:
+
+For MacOS:
+
+```bash
+  g++ -std=c++14 -o tests tests.cpp ../src/FuncionesMath.cpp -I/opt/homebrew/Cellar/googletest/1.14.0/include -L/opt/homebrew/Cellar/googletest/1.14.0/lib -lgtest -lgtest_main -pthread
+```
+
+For Linux:
+
+```bash
+  g++ -o tests tests.cpp ../src/FuncionesMath.cpp -lgtest -lgtest_main -pthread
+```
+
+- 🚀 Run the test
+
+```bash
+  ./tests
+```
+
+- We run 14 tests and all of them passed! 🎉
