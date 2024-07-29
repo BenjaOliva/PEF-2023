@@ -61,7 +61,6 @@ void iterateAndDrawMath(int numberOfLines, const std::vector<double>& xValues) {
     
     for (int i = 0; i < numberOfLines; ++i) {
         std::vector<double> yCosValues;
-        double yOffset = 1.8 - i * 0.4;
 
         double verticalOffSet = (i % 2 == 0) ? -(i / 2) * 0.5 : ((i + 1) / 2) * 0.5;
 
@@ -106,7 +105,6 @@ void iterateAndDrawCustom(int numberOfLines, const std::vector<double>& xValues)
     
     for (int i = 0; i < numberOfLines; ++i) {
         std::vector<double> yCosValues;
-        double yOffset = 1.8 - i * 0.4;
 
         double verticalOffSet = (i % 2 == 0) ? -(i / 2) * 0.5 : ((i + 1) / 2) * 0.5;
 
