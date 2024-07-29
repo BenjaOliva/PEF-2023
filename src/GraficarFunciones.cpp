@@ -64,14 +64,14 @@ void iterateAndDrawMath(int numberOfLines, const std::vector<double>& xValues) {
 
         double verticalOffSet = (i % 2 == 0) ? -(i / 2) * 0.5 : ((i + 1) / 2) * 0.5;
 
-        r = static_cast<float>(1);
-        g = static_cast<float>(0);
-        b = static_cast<float>(0);
+        r = static_cast<float>(rand() % 2);
+        g = static_cast<float>(rand() % 2);
+        b = static_cast<float>(rand() % 2);
         drawMathFunction(cosMath, -8, 8, r, g, b, verticalOffSet);
 
-        r = static_cast<float>(0);
-        g = static_cast<float>(1);
-        b = static_cast<float>(0);
+        r = static_cast<float>(rand() % 2);
+        g = static_cast<float>(rand() % 2);
+        b = static_cast<float>(rand() % 2);
         drawMathFunction(senMath, -8, 8, r, g, b, verticalOffSet);
     }
 }
@@ -108,54 +108,56 @@ void iterateAndDrawCustom(int numberOfLines, const std::vector<double>& xValues)
 
         double verticalOffSet = (i % 2 == 0) ? -(i / 2) * 0.5 : ((i + 1) / 2) * 0.5;
 
-        r = static_cast<float>(1);
-        g = static_cast<float>(0);
-        b = static_cast<float>(0);
+        r = static_cast<float>(rand() % 2);
+        g = static_cast<float>(rand() % 2);
+        b = static_cast<float>(rand() % 2);
         drawCustomFunction(customCos, -8, 8, r, g, b, verticalOffSet);
 
-        r = static_cast<float>(0);
-        g = static_cast<float>(1);
-        b = static_cast<float>(0);
+        r = static_cast<float>(rand() % 2);
+        g = static_cast<float>(rand() % 2);
+        b = static_cast<float>(rand() % 2);
         drawCustomFunction(customSen, -8, 8, r, g, b, verticalOffSet);
     }
 }
 
-void drawSquare(double centerX, double centerY, double size, float r, float g, float b) {
+// TESTING FUNCTIONS
+
+// void drawSquare(double centerX, double centerY, double size, float r, float g, float b) {
     
-    glColor3f(255, 255, 255);
-    glBegin(GL_LINES);
-    glVertex2f(-10.0, 0.0);
-    glVertex2f(10.0, 0.0);
-    glVertex2f(0.0, -2.0);
-    glVertex2f(0.0, 2.0);
-    glEnd();
+//     glColor3f(255, 255, 255);
+//     glBegin(GL_LINES);
+//     glVertex2f(-10.0, 0.0);
+//     glVertex2f(10.0, 0.0);
+//     glVertex2f(0.0, -2.0);
+//     glVertex2f(0.0, 2.0);
+//     glEnd();
 
-    glColor3f(r, g, b);
-    glBegin(GL_LINE_LOOP);
-    glVertex2f(centerX - size / 2, centerY - size / 2);
-    glVertex2f(centerX + size / 2, centerY - size / 2);
-    glVertex2f(centerX + size / 2, centerY + size / 2);
-    glVertex2f(centerX - size / 2, centerY + size / 2);
-    glEnd();
-}
+//     glColor3f(r, g, b);
+//     glBegin(GL_LINE_LOOP);
+//     glVertex2f(centerX - size / 2, centerY - size / 2);
+//     glVertex2f(centerX + size / 2, centerY - size / 2);
+//     glVertex2f(centerX + size / 2, centerY + size / 2);
+//     glVertex2f(centerX - size / 2, centerY + size / 2);
+//     glEnd();
+// }
 
-void iterateAndDrawSquares(int numberOfSquares, const std::vector<double>& xValues) {
-    for (int i = 0; i < numberOfSquares; ++i) {
-        double centerX = 0.0; 
-        double centerY = 0.0;  
-        double baseSize = 0.05; // tamanio del cuadrado base
+// void iterateAndDrawSquares(int numberOfSquares, const std::vector<double>& xValues) {
+//     for (int i = 0; i < numberOfSquares; ++i) {
+//         double centerX = 0.0; 
+//         double centerY = 0.0;  
+//         double baseSize = 0.05; // tamanio del cuadrado base
 
-        float r = static_cast<float>(i % 2); // Alterna entre rojo (0) y verde (1)
-        float g = static_cast<float>((i + 1) % 2); // Alterna entre verde (0) y rojo (1)
-        float b = 0.0f; // Sin azul
+//         float r = static_cast<float>(i % 2); // Alterna entre rojo (0) y verde (1)
+//         float g = static_cast<float>((i + 1) % 2); // Alterna entre verde (0) y rojo (1)
+//         float b = 0.0f; // Sin azul
 
-        double scaleFactor = i * 0.1; // Factor de escala para variar el tamaño de los cuadrados
+//         double scaleFactor = i * 0.1; // Factor de escala para variar el tamaño de los cuadrados
 
-        double size = baseSize + scaleFactor;
+//         double size = baseSize + scaleFactor;
 
-        drawSquare(centerX, centerY, size, r, g, b);
-    }
-}
+//         drawSquare(centerX, centerY, size, r, g, b);
+//     }
+// }
 
 void measure(void (*func)(int, const std::vector<double>&), int numberOfLines, const std::vector<double>& xValues) {
     auto start = std::chrono::high_resolution_clock::now();
